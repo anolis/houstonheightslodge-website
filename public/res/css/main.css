@@ -1,0 +1,106 @@
+html,body{
+    background:#000;
+    color: #ccc;
+    scroll-padding-top: 76px;
+}
+
+.row{
+    margin-bottom:50px;
+}
+
+/* Main navigation bar — full viewport width */
+#mainNav {
+    background: #112;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#mainNav .nav-item:hover {
+    background: #223;
+}
+
+/* Highlight the currently active page */
+#mainNav .nav-link.active {
+    color: #fff !important;
+    background: #334;
+    border-bottom: 3px solid #88aadd;
+    border-radius: 0;
+}
+
+/* Smooth fade between pages — display:block keeps layout stable during jQuery fadeIn/fadeOut */
+#contentContainer {
+    display: block !important;
+    outline: none; /* suppress focus ring on programmatic focus for accessibility */
+    scroll-margin-top: 76px;
+}
+
+/* Site footer */
+#siteFooter {
+    background: #112;
+    color: #bbb;
+    padding: 40px 0 20px;
+    margin-top: 60px;
+    border-top: 1px solid #334;
+}
+
+#siteFooter h6 {
+    color: #ddd;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+    margin-bottom: 10px;
+}
+
+#siteFooter a {
+    color: #88aadd;
+    text-decoration: none;
+}
+
+#siteFooter a:hover {
+    color: #fff;
+}
+
+#contentContainer{
+    margin-top:50px;
+    background: #223;
+    padding:20px;
+    border-radius: 5px;
+}
+
+.alert-danger{
+    background: #600;
+    border-color: #200;
+    color: #ddd;
+}
+.card{
+    background:#445 !important;
+}
+
+.alert-info{
+    background-color: #677 !important;
+    color:white !important;
+}
+
+/* Members area — dark-themed form inputs */
+.members-input {
+    background: #334 !important;
+    border-color: #556 !important;
+    color: #eee !important;
+}
+.members-input:focus {
+    background: #445 !important;
+    border-color: #88aadd !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.25rem rgba(136,170,221,0.25) !important;
+}
+.members-input::placeholder {
+    color: #778 !important;
+}
+.members-link {
+    color: #88aadd !important;
+    text-decoration: none;
+}
+.members-link:hover {
+    color: #fff !important;
+}
