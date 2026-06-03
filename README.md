@@ -1,58 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Houston Heights Lodge Website
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Public Laravel site for Houston Heights Lodge #225.
 
-## About Laravel
+- Live URL: https://website.houstonheightslodge225.com
+- Server path: `/var/www/website`
+- Web root: `/var/www/website/public`
+- Production server: `lodge`
+- Repository: `git@github.com:anolis/houstonheightslodge-website.git`
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+This app is the Laravel port of the former static/PHP site in `/var/www/html`. The old page fragments were copied into Blade views and are rendered by Laravel routes instead of the old AJAX shell.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Key files:
 
-## Learning Laravel
+- `routes/web.php`: public page routes, metadata map, and downloads routes.
+- `resources/views/layouts/public.blade.php`: shared layout, navigation, footer, analytics, and the five-tap downloads shortcut on the site title.
+- `resources/views/pages/*.blade.php`: page content migrated from `res/pages/*.html`.
+- `resources/views/downloads/index.blade.php`: downloads listing page.
+- `public/res`: static images, CSS, JavaScript, and Lightbox assets copied from the old site.
+- `downloads`: server-local downloadable files. Contents are ignored by git.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Downloads
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+APK files live in the project-level `downloads/` directory, not under `public/`.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+The `/downloads` route lists `*.apk` files from that directory, and `/downloads/{filename}` streams matching APK files through Laravel.
 
-## Agentic Development
+Git behavior:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- `downloads/.gitkeep` is tracked so the directory exists after clone.
+- `downloads/*` is ignored so APK files are not committed.
+
+## Legacy API
+
+The members page still calls legacy endpoints under `public/api`:
+
+- `check-auth.php`
+- `send-otp.php`
+- `verify-otp.php`
+- `logout.php`
+
+The private config file is intentionally ignored:
+
+- `public/api/_config.php`
+
+Keep that file on the server, but do not commit it.
+
+## Apache
+
+The production vhost points `website.houstonheightslodge225.com` at Laravel's public directory.
+
+Relevant Apache site files on `lodge`:
+
+- `/etc/apache2/sites-available/website.houstonheightslodge225.com.conf`
+- `/etc/apache2/sites-available/website.houstonheightslodge225.com-le-ssl.conf`
+
+After changing Apache config:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+sudo /usr/sbin/apache2ctl configtest
+sudo systemctl reload apache2
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Certbot manages the HTTPS certificate and renewal.
 
-## Contributing
+## Local Server Check
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+From `/var/www/website` on `lodge`:
 
-## Code of Conduct
+```bash
+php artisan serve --host=127.0.0.1 --port=8099
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Then test sample routes:
 
-## Security Vulnerabilities
+```bash
+curl -I http://127.0.0.1:8099/
+curl -I http://127.0.0.1:8099/about
+curl -I http://127.0.0.1:8099/downloads
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tests
 
-## License
+Run the Laravel test suite:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan test
+```
+
+## Deploy Notes
+
+Typical update flow on `lodge`:
+
+```bash
+cd /var/www/website
+git pull origin main
+composer install --no-dev --optimize-autoloader
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan test
+```
+
+Writable runtime paths must be writable by both the SSH user and the web server group:
+
+```bash
+sudo chown -R admin:www-data storage bootstrap/cache
+find storage bootstrap/cache -type d -exec chmod 2775 {} +
+find storage bootstrap/cache -type f -exec chmod 0664 {} +
+```
+
+## Git Ignore Policy
+
+Do not commit:
+
+- `.env`
+- `vendor/`
+- `database/database.sqlite`
+- runtime files under `storage/` and `bootstrap/cache/`
+- APK files under `downloads/`
+- `public/api/_config.php`
