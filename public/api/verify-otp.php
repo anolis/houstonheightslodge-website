@@ -1,4 +1,5 @@
 <?php
+
 ini_set('session.cookie_httponly', '1');
 ini_set('session.cookie_samesite', 'None');
 ini_set('session.cookie_secure', '1');
@@ -13,14 +14,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require __DIR__ . '/_config.php';
-require __DIR__ . '/_gas.php';
+require __DIR__.'/_config.php';
+require __DIR__.'/_gas.php';
 
-$body  = json_decode(file_get_contents('php://input'), true);
+$body = json_decode(file_get_contents('php://input'), true);
 $email = strtolower(trim($body['email'] ?? ''));
-$otp   = trim($body['otp'] ?? '');
+$otp = trim($body['otp'] ?? '');
 
-if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^\d{6}$/', $otp)) {
+if (! filter_var($email, FILTER_VALIDATE_EMAIL) || ! preg_match('/^\d{6}$/', $otp)) {
     http_response_code(400);
     echo json_encode(['error' => 'Invalid request.']);
     exit;
@@ -29,9 +30,9 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^\d{6}$/', $otp)
 // Ask GAS to verify the code against the OTPs sheet
 $result = gasPost(['action' => 'verifyOtp', 'email' => $email, 'code' => $otp, 'secret' => GAS_SECRET]);
 
-if (!empty($result['ok'])) {
+if (! empty($result['ok'])) {
     $_SESSION['members_authenticated'] = true;
-    $_SESSION['members_email']         = $email;
+    $_SESSION['members_email'] = $email;
     echo json_encode(['ok' => true]);
 } else {
     http_response_code(401);
