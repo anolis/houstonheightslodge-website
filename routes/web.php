@@ -49,7 +49,7 @@ $pages = [
     'chili-cookoff' => ['label' => 'Chili Cookoff', 'title' => 'Chili Cookoff | Houston Heights Lodge #225'],
     'contact' => ['label' => 'Contact', 'title' => 'Contact | Houston Heights Lodge #225'],
     'events' => ['label' => 'Events', 'title' => 'Events | Houston Heights Lodge #225'],
-    'members' => ['label' => 'Members Area', 'title' => 'Members Area | Houston Heights Lodge #225'],
+    'members' => ['label' => 'Members', 'title' => 'Members | Houston Heights Lodge #225'],
     'sausagefest' => ['label' => 'Sausagefest', 'title' => 'Sausagefest | Houston Heights Lodge #225'],
     'sausagequest' => ['label' => 'Sausagequest', 'title' => 'Sausagequest | Houston Heights Lodge #225'],
     'sponsors' => ['label' => 'Sponsors', 'title' => 'Sponsors | Houston Heights Lodge #225'],
@@ -71,6 +71,7 @@ $renderPage = function (string $page) use ($pages, $navPages) {
     ]);
 };
 
+Route::get('/members', fn () => redirect('https://secret.houstonheightslodge225.com/'));
 Route::get('/', fn () => $renderPage('home'));
 Route::get('/home', fn () => $renderPage('home'));
 
