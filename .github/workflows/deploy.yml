@@ -1,0 +1,69 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  deploy-staging:
+    name: Deploy to staging
+    needs: ci
+    runs-on: [self-hosted, staging]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync working tree to /var/www/website
+        run: |
+          rsync -a --delete \
+            --exclude='.git/' \
+            --exclude='.env' \
+            --exclude='storage/' \
+            --exclude='database/*.sqlite' \
+            --exclude='node_modules/' \
+            --exclude='vendor/' \
+            --exclude='public/build/' \
+            --exclude='public/storage' \
+            ./ /var/www/website/
+
+      - name: Build, migrate, refresh caches
+        run: |
+          cd /var/www/website
+          composer install --prefer-dist --no-interaction --no-progress
+          npm ci
+          npm run build
+          php artisan migrate --force
+          php artisan config:clear && php artisan route:clear && php artisan view:clear
+
+  deploy-prod:
+    name: Deploy to production
+    needs: [ci, deploy-staging]
+    runs-on: [self-hosted, staging]
+    steps:
+      - name: SSH deploy (over Tailscale)
+        env:
+          PROD_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+          PROD_USER: ${{ secrets.PROD_USER }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$PROD_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$PROD_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes "$PROD_USER@$PROD_HOST" "set -e && \
+            cd /var/www/website && \
+            git pull --ff-only origin main && \
+            composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader && \
+            npm ci && \
+            npm run build && \
+            php artisan migrate --force && \
+            php artisan config:clear && php artisan route:clear && php artisan view:clear"
