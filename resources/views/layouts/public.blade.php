@@ -26,8 +26,8 @@
       "@@type": "Organization",
       "name": "Houston Heights Lodge #225",
       "alternateName": "Houston Heights Odd Fellows Lodge #225",
-      "url": "https://www.houstonheightslodge225.com",
-      "logo": "https://www.houstonheightslodge225.com/res/img/links_FLT.png",
+      "url": "{{ config('lodge.site_url') }}",
+      "logo": "{{ config('lodge.site_url') }}/res/img/links_FLT.png",
       "email": "marilybbrooks@gmail.com",
       "address": {
         "@@type": "PostalAddress",
@@ -63,7 +63,7 @@
                     </li>
                 @endforeach
                 <li class="nav-item">
-                    <a class="nav-link" href="https://secret.houstonheightslodge225.com/" target="_blank" rel="noopener">Members</a>
+                    <a class="nav-link" href="{{ config('lodge.portal_url') }}/" target="_blank" rel="noopener">Members</a>
                 </li>
             </ul>
         </div>

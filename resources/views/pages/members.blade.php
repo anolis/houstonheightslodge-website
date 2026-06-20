@@ -78,7 +78,7 @@
     // Load the forum via SSO bridge (set src once — avoids reload on re-render)
     var frame = el('forumFrame');
     if (!frame.getAttribute('src')) {
-      frame.setAttribute('src', 'https://forum.houstonheightslodge225.com/sso.php');
+      frame.setAttribute('src', '{{ config('lodge.forum_url') }}/sso.php');
     }
   }
 
