@@ -35,6 +35,14 @@ jobs:
             --exclude='public/storage' \
             ./ /var/www/website/
 
+      - name: Restore runtime write permissions
+        # rsync -a resets the database/ + bootstrap/cache dir perms, which clamps
+        # the www-data ACL mask and stops Apache writing SQLite (sessions/cache).
+        # Re-grant www-data write after every sync.
+        run: |
+          cd /var/www/website
+          sudo setfacl -R -m u:www-data:rwX -d -m u:www-data:rwX database bootstrap/cache storage
+
       - name: Build, migrate, refresh caches
         run: |
           cd /var/www/website
