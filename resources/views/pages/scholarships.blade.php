@@ -21,6 +21,7 @@
         margin-bottom:30px;
         border-radius:10px;
         overflow:hidden;
+        padding:0 !important;
     }
     .scholarship-photo img{
         display:block;
