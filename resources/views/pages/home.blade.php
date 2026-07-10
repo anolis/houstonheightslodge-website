@@ -208,16 +208,30 @@
 -->    
 
 
-<div class="row justify-content-center align-items-center mb-4">
-    <div class="col-12 col-md-4 text-center">
-        <img loading="lazy" src="/res/img/eyeglass_collection_drive_2026.jpg" class="img-fluid" style="border-radius:8px; max-width:320px;">
-    </div>
-    <div class="col-12 col-md-8 mt-3 mt-md-0">
-        <h3>Eyeglass Collection Drive</h3>
-        <p>We're collecting donated eyeglasses to help people in need. If you have old glasses sitting in a drawer, bring them along to any lodge night — drop them off and we'll make sure they find someone who needs them.</p>
-        <p>Lodge nights are every Tuesday at 7:30 PM at <strong>115 E. 14th St., Houston, TX 77008</strong>.</p>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-12 col-lg-8 col-12 col col-sm-12 text-center" style="border-radius: 5px;">
+        <br>
+        <h2>Fish Fry Feast of Fellowship and Friendship</h2>
+        <h3>Scholarship Fundraiser</h3>
+        <h5>Saturday, August 1st &middot; 11:00 AM &ndash; 2:00 PM</h5>
+        <br>
+        <div class="row justify-content-center">
+            <p class="text-left col-lg-8 col-md-8 col-12">
+                Please join us as we raise money for our scholarship program! On August 1st we will be having a scholarship fundraiser at the lodge.
+                <br>
+                <br>Plates are just $20 and include a fried fish dinner with all the fixings.
+                <br>
+                <br><strong>115 E. 14th Street, Houston, TX</strong>
+            </p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="donate-button-container col-lg-8 col-xl-8 col-sm-12 text-center" style="border-radius:10px;">
+                <a class="btn btn-primary" target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=EGLENU47SQTN8" style="font-size: 30px;">Donate to the Scholarship Fund</a>
+            </div>
+        </div>
     </div>
 </div>
+<hr>
 
 <div class="row justify-content-center">
 

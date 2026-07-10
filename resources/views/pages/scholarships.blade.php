@@ -11,6 +11,6 @@
 <style>
     .scholarships img{
         margin-bottom:30px;
-        border-radius:10px !important;
+        border-radius:24px !important;
     }
 </style>
