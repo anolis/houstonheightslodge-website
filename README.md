@@ -2,7 +2,7 @@
 
 Public Laravel site for Houston Heights Lodge #225.
 
-- Live URL: https://website.houstonheightslodge225.com
+- Live URL: https://houstonheightslodge225.com (and `www.`; `website.` 301-redirects here)
 - Server path: `/var/www/website`
 - Web root: `/var/www/website/public`
 - Production server: `lodge`
@@ -137,6 +137,37 @@ Deploys are **automated** via GitHub Actions (`.github/workflows/ci.yml` and
      `php artisan migrate --force`, and a cache refresh.
 
 Watch a deploy with `gh run watch` or in the repo's **Actions** tab.
+
+### Where the CI/CD runner runs
+
+The `ci` jobs run on GitHub-hosted `ubuntu-latest`. The `deploy-staging` and
+`deploy-prod` jobs run on a **self-hosted runner** (`runs-on: [self-hosted,
+staging]`):
+
+- The runner for this repo is **`vbox-website`**; a sibling runner
+  **`vbox-portal`** serves the admin-portal repo. Both run inside a **single
+  VirtualBox VM** — `portal-staging` (guest hostname `vbox`) — on the **`bb`**
+  desktop (Pop!_OS). This VM was migrated off the old laptop in July 2026.
+- That same VM hosts the **staging** environment (Apache/PHP at
+  `/var/www/website`); the runner's work dir is `~/runner-website`.
+- Networking: the VM is NAT'd with port-forwards on `bb`'s loopback — SSH
+  `8022→22`, HTTP `8080→80`, HTTPS `8443→443`. Reach it with `ssh
+  portal-staging` (routes through `bb` via `ProxyJump` from elsewhere; direct on
+  `bb`). The staging site on `bb` is `http://127.0.0.1:8080`.
+- `deploy-prod` runs from that runner and SSHes to production (`lodge`) over
+  **Tailscale**.
+
+**If a deploy is stuck or fails before CI even reaches staging:**
+
+1. Is the VM up? On `bb`: `VBoxManage list runningvms` (start it with
+   `VBoxManage startvm portal-staging --type headless`).
+2. Is the runner online? In the VM:
+   `systemctl status 'actions.runner.*website*'` — or GitHub → repo **Settings →
+   Actions → Runners**.
+3. The staging **build** step (`npm run build`) fetches web fonts over the
+   network at build time; a network blip there can fail the deploy. (The failed
+   deploys in July 2026 were transient font-fetch timeouts on the old laptop's
+   network and no longer recur on `bb`.)
 
 ### Manual deploy (fallback)
 
