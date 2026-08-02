@@ -208,6 +208,8 @@
 -->    
 
 
+<!-- Fish Fry Scholarship Fundraiser (Aug 1, 2026 — past event, kept for reuse) -->
+<!--
 <div class="row justify-content-center">
     <div class="col-12 col-md-12 col-lg-8 col-12 col col-sm-12 text-center" style="border-radius: 5px;">
         <br>
@@ -248,6 +250,7 @@
     </div>
 </div>
 <hr>
+-->
 
 <div class="row justify-content-center">
 
