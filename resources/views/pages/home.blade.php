@@ -215,18 +215,34 @@
         <h3>Scholarship Fundraiser</h3>
         <h5>Saturday, August 1st &middot; 11:00 AM &ndash; 2:00 PM</h5>
         <br>
+        <img loading="lazy" class="img img-rounded img-responsive col-lg-8 col-md-8 col-12" src="res/img/fishfry-scholarship-2026.jpg" alt="Odd Fish Fest &mdash; Fish Fry Scholarship Fundraiser" style="border-radius: 5px !important; padding:0;">
         <div class="row justify-content-center">
             <p class="text-left col-lg-8 col-md-8 col-12">
-                Please join us as we raise money for our scholarship program! On August 1st we will be having a scholarship fundraiser at the lodge.
+                We will be bringing back our Fish Fry Scholarship Fundraiser on August 1st. I hope you can join us from 11:00 AM &ndash; 2:00 PM as we break bread and enjoy Odd Fellowship in support of our Scholarship program.
                 <br>
-                <br>Plates are just $20 and include a fried fish dinner with all the fixings.
+                <br>Please use the link below to donate <strong>$20 for your plate</strong> today and specify if you want <strong>catfish, shrimp, or both</strong>:
+            </p>
+            <ul class="text-left col-lg-8 col-md-8 col-12">
+                <li><strong>Catfish</strong> &mdash; 2 catfish filets</li>
+                <li><strong>Shrimp</strong> &mdash; 8 shrimp</li>
+                <li><strong>Both</strong> &mdash; 1 catfish filet and 4 shrimp</li>
+            </ul>
+            <p class="text-left col-lg-8 col-md-8 col-12">
+                We will also have french fries, hush puppies, and cole slaw to round out your meal. Beverages will be available for a donation.
+                <br>
+                <br>It will be <strong>$25 a plate the day of the event</strong> if we have enough left.
                 <br>
                 <br><strong>115 E. 14th Street, Houston, TX</strong>
+                <br>
+                <br>FLT
             </p>
         </div>
         <div class="row justify-content-center">
-            <div class="donate-button-container col-lg-8 col-xl-8 col-sm-12 text-center" style="border-radius:10px;">
-                <a class="btn btn-primary" target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=EGLENU47SQTN8" style="font-size: 30px;">Donate to the Scholarship Fund</a>
+            <div class="donate-button-container col-lg-6 col-xl-6 col-sm-12 text-center">
+                <a class="btn btn-primary" target="_blank" href="https://www.paypal.com/donate/?hosted_button_id=EGLENU47SQTN8" style="font-size: 28px;">Donate $20 for Your Plate</a>
+            </div>
+            <div class="donate-button-container col-lg-6 col-xl-6 col-sm-12 text-center">
+                <a class="btn btn-primary" target="_blank" href="https://www.facebook.com/events/1747873129980094/" style="font-size: 28px;">Facebook Event</a>
             </div>
         </div>
     </div>
