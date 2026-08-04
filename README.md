@@ -131,10 +131,12 @@ Deploys are **automated** via GitHub Actions (`.github/workflows/ci.yml` and
 3. **Merge to `main`.** That triggers the **Deploy** workflow on the self-hosted
    runner:
    - CI runs again as a gate, then
-   - **staging** is synced and built, then — only if that passes —
+   - CI publishes the tested Vite bundle; **staging** installs it and runs HTTP
+     smoke checks, then — only if that passes —
    - **production** (`/var/www/website` on `lodge`, reached over Tailscale) is
-     updated: `git pull`, `composer install --no-dev`, `npm ci && npm run build`,
-     `php artisan migrate --force`, and a cache refresh.
+     updated at the exact `main` SHA: Composer installs the locked PHP dependencies,
+     the same tested frontend bundle is installed, migrations run, and post-deploy
+     HTTP smoke checks must pass.
 
 Watch a deploy with `gh run watch` or in the repo's **Actions** tab.
 

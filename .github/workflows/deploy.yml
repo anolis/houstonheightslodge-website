@@ -43,35 +43,81 @@ jobs:
           cd /var/www/website
           sudo setfacl -R -m u:www-data:rwX -d -m u:www-data:rwX database bootstrap/cache storage
 
-      - name: Build, migrate, refresh caches
+      - name: Download tested frontend bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: website-build-${{ github.sha }}
+          path: ${{ runner.temp }}/website-build
+
+      - name: Install tested frontend bundle
+        run: |
+          mkdir -p /var/www/website/public/build
+          rsync -a --delete "$RUNNER_TEMP/website-build/" /var/www/website/public/build/
+
+      - name: Install dependencies, migrate, refresh caches
         run: |
           cd /var/www/website
           composer install --prefer-dist --no-interaction --no-progress
-          npm ci
-          npm run build
           php artisan migrate --force
           php artisan config:clear && php artisan route:clear && php artisan view:clear
+
+      - name: HTTP smoke test
+        run: |
+          for path in / /about /downloads /up; do
+            curl --fail --show-error --silent --retry 3 \
+              --header 'Host: houstonheightslodge225.com' \
+              --output /dev/null "http://127.0.0.1${path}"
+          done
 
   deploy-prod:
     name: Deploy to production
     needs: [ci, deploy-staging]
     runs-on: [self-hosted, staging]
     steps:
+      - name: Download tested frontend bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: website-build-${{ github.sha }}
+          path: ${{ runner.temp }}/website-build
+
       - name: SSH deploy (over Tailscale)
         env:
           PROD_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
           PROD_HOST: ${{ secrets.PROD_HOST }}
           PROD_USER: ${{ secrets.PROD_USER }}
+          DEPLOY_SHA: ${{ github.sha }}
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
           printf '%s\n' "$PROD_SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$PROD_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          tar -C "$RUNNER_TEMP/website-build" -czf "$RUNNER_TEMP/website-build.tgz" .
+          scp -i ~/.ssh/deploy_key -o IdentitiesOnly=yes \
+            "$RUNNER_TEMP/website-build.tgz" "$PROD_USER@$PROD_HOST:/tmp/website-build-$DEPLOY_SHA.tgz"
           ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes "$PROD_USER@$PROD_HOST" "set -e && \
             cd /var/www/website && \
-            git pull --ff-only origin main && \
+            test \"\$(git branch --show-current)\" = main && \
+            test -z \"\$(git status --porcelain)\" && \
+            git fetch origin main && \
+            test \"\$(git rev-parse origin/main)\" = \"$DEPLOY_SHA\" && \
+            php artisan down --retry=60 && \
+            trap 'php artisan up' EXIT && \
+            git merge --ff-only origin/main && \
             composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader && \
-            npm ci && \
-            npm run build && \
+            build_stage=\$(mktemp -d /tmp/website-build.XXXXXX) && \
+            tar -xzf /tmp/website-build-$DEPLOY_SHA.tgz -C \"\$build_stage\" && \
+            mkdir -p public/build && \
+            rsync -a --delete \"\$build_stage/\" public/build/ && \
+            rm -rf \"\$build_stage\" && \
+            rm -f /tmp/website-build-$DEPLOY_SHA.tgz && \
             php artisan migrate --force && \
-            php artisan config:clear && php artisan route:clear && php artisan view:clear"
+            php artisan config:clear && php artisan route:clear && php artisan view:clear && \
+            php artisan up && \
+            trap - EXIT"
+
+      - name: Production smoke test
+        run: |
+          for path in / /about /downloads /up; do
+            curl --fail --show-error --silent --retry 5 --retry-all-errors \
+              --output /dev/null "https://houstonheightslodge225.com${path}"
+          done
