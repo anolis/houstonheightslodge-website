@@ -71,3 +71,11 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Publish tested frontend bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-build-${{ github.sha }}
+          path: public/build
+          if-no-files-found: error
+          retention-days: 7
