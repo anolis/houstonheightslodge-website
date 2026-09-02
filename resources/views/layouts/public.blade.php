@@ -5,7 +5,7 @@
     <title>{{ $title ?? "Houston Heights Lodge #225" }}</title>
     <meta name="description" content="{{ $description ?? "The home page of Houston Heights Lodge #225" }}">
     <meta name="keywords" content="IOOF OddFellows">
-    <meta property="og:image" content="{{ asset("res/img/links_FLT.png") }}">
+    <meta property="og:image" content="{{ $socialImage ?? asset("res/img/links_FLT.png") }}">
     <meta property="og:url" content="{{ url($page === "home" ? "/" : "/" . $page) }}">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ $title ?? "Houston Heights Lodge #225" }}">

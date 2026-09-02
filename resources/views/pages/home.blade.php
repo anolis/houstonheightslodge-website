@@ -1,3 +1,49 @@
+<section class="sausagefest-feature" aria-labelledby="sausagefest-2026-title">
+    <div class="sausagefest-feature__poster">
+        <a href="{{ asset('res/img/sausagefest-2026.png') }}"
+           data-lightbox="sausagefest-2026"
+           data-title="Houston Heights Odd Fellows Lodge #225 Sausage Fest 2026 poster">
+            <picture>
+                <source srcset="{{ asset('res/img/sausagefest-2026.webp') }}" type="image/webp">
+                <img src="{{ asset('res/img/sausagefest-2026.png') }}"
+                     alt="Sausage Fest 2026 at Houston Heights Odd Fellows Lodge #225, Saturday, September 26, noon to 4 PM"
+                     width="1024"
+                     height="1536"
+                     fetchpriority="high">
+            </picture>
+        </a>
+    </div>
+
+    <div class="sausagefest-feature__copy">
+        <p class="sausagefest-feature__eyebrow">Sausage Fest 2026</p>
+        <h1 id="sausagefest-2026-title">Saturday, September 26th at the Heights Odd Fellows Lodge!</h1>
+        <p class="sausagefest-feature__invite">Everyone is invited to join us!</p>
+
+        <p>It’s near! It’s almost here! There’s sausage! Thirst-quenching libations! And did we say&hellip; sausage!</p>
+
+        <ul class="sausagefest-feature__menu" aria-label="Sausage Fest menu prices">
+            <li><span>Sausage on a stick</span><strong>$6</strong></li>
+            <li><span>Sausage plate with traditional fixings</span><strong>$15</strong></li>
+            <li><span>Carnivore sausage sampler plate</span><strong>$20</strong></li>
+        </ul>
+
+        <p>Break out your lederhosen and dirndls for drinks, sausage, music, fun and gemütlichkeit! <em>Gemütlichkeit</em> is a German word meaning a space or state of warmth, friendliness, and good cheer. The lodge has plenty of room for this celebration.</p>
+
+        <p class="sausagefest-feature__weather">The event will go on rain or shine!</p>
+
+        <dl class="sausagefest-feature__details">
+            <div>
+                <dt>When</dt>
+                <dd><time datetime="2026-09-26T12:00:00-05:00">Saturday, September 26, 2026<br>Noon&ndash;4 PM</time></dd>
+            </div>
+            <div>
+                <dt>Where</dt>
+                <dd>IOOF Lodge #225<br>115 E. 14th St.<br>Houston, TX 77008</dd>
+            </div>
+        </dl>
+    </div>
+</section>
+
    <!-- Chili Cookoff Stuff -->
    <!-- <div class="row justify-content-center">
         <div class="col-12 col-md-12 col-lg-8 col-12 col col-sm-12 text-center" style="border-radius: 5px;">
