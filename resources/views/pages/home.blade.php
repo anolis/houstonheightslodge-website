@@ -41,6 +41,13 @@
                 <dd>IOOF Lodge #225<br>115 E. 14th St.<br>Houston, TX 77008</dd>
             </div>
         </dl>
+
+        <a class="sausagefest-feature__facebook"
+           href="https://www.facebook.com/share/1JyvvFkbj1/"
+           target="_blank"
+           rel="noopener noreferrer">
+            View the Facebook event
+        </a>
     </div>
 </section>
 

@@ -181,6 +181,28 @@ html,body{
     line-height: 1.45;
 }
 
+.sausagefest-feature__facebook {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.25rem;
+    padding: 0.8rem 1.15rem;
+    border-radius: 6px;
+    background: #1877f2;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.sausagefest-feature__facebook:hover,
+.sausagefest-feature__facebook:focus {
+    background: #0f65d6;
+    color: #fff;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
 @media (max-width: 767.98px) {
     .sausagefest-feature {
         grid-template-columns: 1fr;
