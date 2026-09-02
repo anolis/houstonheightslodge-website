@@ -27,6 +27,8 @@ class PublicSiteTest extends TestCase
             ->assertSee('Saturday, September 26th at the Heights Odd Fellows Lodge!')
             ->assertSee('Everyone is invited to join us!')
             ->assertSee('Carnivore sausage sampler plate')
+            ->assertSee('View the Facebook event')
+            ->assertSee('href="https://www.facebook.com/share/1JyvvFkbj1/"', false)
             ->assertSee('res/img/sausagefest-2026.webp', false)
             ->assertSee('res/img/sausagefest-2026.png', false)
             ->assertSee('<meta property="og:image" content="http://localhost/res/img/sausagefest-2026.png">', false);
