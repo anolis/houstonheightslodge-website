@@ -20,6 +20,18 @@ class PublicSiteTest extends TestCase
         $this->get('/definitely-not-a-lodge-page')->assertNotFound();
     }
 
+    public function test_homepage_features_sausage_fest_2026(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Saturday, September 26th at the Heights Odd Fellows Lodge!')
+            ->assertSee('Everyone is invited to join us!')
+            ->assertSee('Carnivore sausage sampler plate')
+            ->assertSee('res/img/sausagefest-2026.webp', false)
+            ->assertSee('res/img/sausagefest-2026.png', false)
+            ->assertSee('<meta property="og:image" content="http://localhost/res/img/sausagefest-2026.png">', false);
+    }
+
     public function test_members_page_redirects_to_the_private_portal(): void
     {
         $this->get('/members')->assertRedirect('https://secret.houstonheightslodge225.com/');

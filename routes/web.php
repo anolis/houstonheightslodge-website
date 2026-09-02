@@ -7,7 +7,8 @@ $pages = [
     'home' => [
         'label' => 'Home',
         'title' => 'Houston Heights Lodge #225',
-        'description' => 'The Houston Heights Lodge #225, an Independent Order of Odd Fellows lodge in the Houston Heights neighborhood of Houston, TX.',
+        'description' => 'Join Houston Heights Odd Fellows Lodge #225 for Sausage Fest 2026 on Saturday, September 26, from noon to 4 PM.',
+        'image' => 'res/img/sausagefest-2026.png',
         'nav' => true,
     ],
     'about' => [
@@ -67,6 +68,7 @@ $renderPage = function (string $page) use ($pages, $navPages) {
         'page' => $page,
         'title' => $meta['title'] ?? Str::headline($page).' | Houston Heights Lodge #225',
         'description' => $meta['description'] ?? 'Houston Heights Lodge #225 information and updates.',
+        'socialImage' => asset($meta['image'] ?? 'res/img/links_FLT.png'),
         'navPages' => $navPages(),
     ]);
 };
