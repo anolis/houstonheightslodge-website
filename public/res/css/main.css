@@ -152,6 +152,48 @@ html,body{
     font-size: 1.12rem;
 }
 
+.sausagefest-feature__preorder {
+    margin: 1.4rem 0;
+    padding: 1rem;
+    border: 1px solid #e0a637;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.sausagefest-feature__preorder h2 {
+    color: #fff8ec;
+    font-size: 1.4rem;
+}
+
+.sausagefest-feature__payment-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.sausagefest-feature__payment {
+    flex: 1 1 220px;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    background: #f2bd55;
+    color: #17182a;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.sausagefest-feature__payment:hover,
+.sausagefest-feature__payment:focus {
+    background: #ffcf75;
+    color: #17182a;
+    text-decoration: underline;
+}
+
+.sausagefest-feature__payment:focus-visible {
+    outline: 3px solid #fff8ec;
+    outline-offset: 3px;
+}
+
 .sausagefest-feature__details {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -27,6 +27,16 @@
             <li><span>Carnivore sausage sampler plate</span><strong>$20</strong></li>
         </ul>
 
+        <section class="sausagefest-feature__preorder" aria-labelledby="sausagefest-preorder-title">
+            <h2 id="sausagefest-preorder-title">Pre-purchase your sausage sticks and plates</h2>
+            <p>Pay ahead with PayPal, then just show your receipt on your phone or bring a printed copy on September 26 to pick up your order.</p>
+            <div class="sausagefest-feature__payment-links">
+                <a href="https://paypal.me/IOOF225/6" class="sausagefest-feature__payment">Buy sausage on a stick &ndash; $6</a>
+                <a href="https://paypal.me/IOOF225/15" class="sausagefest-feature__payment">Buy sausage plate &ndash; $15</a>
+                <a href="https://paypal.me/IOOF225/20" class="sausagefest-feature__payment">Buy carnivore sampler plate &ndash; $20</a>
+            </div>
+        </section>
+
         <p>Break out your lederhosen and dirndls for drinks, sausage, music, fun and gemütlichkeit! <em>Gemütlichkeit</em> is a German word meaning a space or state of warmth, friendliness, and good cheer. The lodge has plenty of room for this celebration.</p>
 
         <p class="sausagefest-feature__weather">The event will go on rain or shine!</p>
