@@ -38,7 +38,8 @@
         "addressCountry": "US"
       },
       "sameAs": [
-        "https://www.facebook.com/OddFellowsLodge225"
+        "https://www.facebook.com/OddFellowsLodge225",
+        "https://www.instagram.com/heightsoddfellows/"
       ]
     }
     </script>
@@ -86,7 +87,8 @@
                 <h6>Contact</h6>
                 <p>
                     <a href="mailto:marilybbrooks@gmail.com">Email Us</a><br>
-                    <a href="https://www.facebook.com/OddFellowsLodge225" target="_blank" rel="noopener">Facebook</a>
+                    <a href="https://www.facebook.com/OddFellowsLodge225" target="_blank" rel="noopener">Facebook</a><br>
+                    <a href="https://www.instagram.com/heightsoddfellows/" target="_blank" rel="noopener">Instagram @heightsoddfellows</a>
                 </p>
             </div>
             <div class="col-12 col-md-4 mb-3">
