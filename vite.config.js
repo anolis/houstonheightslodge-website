@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
@@ -8,11 +7,9 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
+            // Fonts are self-hosted via @fontsource (imported in resources/css/app.css),
+            // so the build needs no network fetch (previously bunny() pulled from
+            // fonts.bunny.net at build time, which hung on the prod host).
         }),
         tailwindcss(),
     ],
