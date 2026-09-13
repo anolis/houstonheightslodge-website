@@ -11,6 +11,13 @@ $pages = [
         'image' => 'res/img/sausagefest-2026.png',
         'nav' => true,
     ],
+    'NNO2026' => [
+        'label' => 'National Night Out',
+        'title' => 'National Night Out 2026 | Houston Heights Lodge #225',
+        'description' => 'Join your Heights neighbors for a free, family-friendly National Night Out on Tuesday, October 6, 2026, from 5:30 PM to 8:00 PM at 115 E. 14th Street. Meet first responders, enjoy free ice cream, and win a door prize!',
+        'image' => 'res/img/nno-2026.png',
+        'nav' => true,
+    ],
     'about' => [
         'label' => 'About',
         'title' => 'About | Houston Heights Lodge #225',
@@ -76,6 +83,7 @@ $renderPage = function (string $page) use ($pages, $navPages) {
 Route::get('/members', fn () => redirect('https://secret.houstonheightslodge225.com/'));
 Route::get('/', fn () => $renderPage('home'));
 Route::get('/home', fn () => $renderPage('home'));
+Route::get('/nno2026', fn () => redirect('/NNO2026', 301));
 
 Route::get('/downloads', function () use ($navPages, $downloadsPath) {
     $apks = collect(glob($downloadsPath('*.apk')) ?: [])

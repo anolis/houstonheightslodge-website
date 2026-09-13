@@ -77,6 +77,94 @@ html,body{
     background:#445 !important;
 }
 
+/* National Night Out landing page */
+.nno-home-notice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 1rem 1.25rem;
+    margin: -1rem 0 2rem;
+    border: 1px solid #4d536f;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.nno-home-notice p {
+    margin: 0;
+}
+
+.nno-home-notice a {
+    color: #a9c9ff;
+    white-space: nowrap;
+}
+
+.nno-event {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: 3rem;
+}
+
+.nno-event__logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+}
+
+.nno-event__eyebrow,
+.nno-event__details dt {
+    color: #7bd4ff;
+    font-weight: 700;
+}
+
+.nno-event h1 {
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+.nno-event__details {
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    border: 1px solid #7bd4ff;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.nno-event__details div + div {
+    margin-top: 1rem;
+}
+
+.nno-event__details dd {
+    margin: 0;
+}
+
+.nno-event__welcome {
+    font-weight: 700;
+}
+
+.nno-event__flyer img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.nno-event__flyer figcaption {
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+    .nno-event {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
 /* Homepage event feature */
 .sausagefest-feature {
     display: grid;
