@@ -20,6 +20,24 @@ class PublicSiteTest extends TestCase
         $this->get('/definitely-not-a-lodge-page')->assertNotFound();
     }
 
+    public function test_browser_favicons_are_declared_and_assets_are_valid(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<link rel="icon" type="image/png" sizes="16x16"', false)
+            ->assertSee('<link rel="icon" type="image/png" sizes="32x32"', false)
+            ->assertDontSee('res/img/favicon/manifest.json', false);
+
+        foreach ([16, 32] as $size) {
+            $image = getimagesize(public_path("res/img/favicon/favicon-{$size}x{$size}.png"));
+            $this->assertSame([$size, $size], [$image[0], $image[1]]);
+        }
+
+        $icon = file_get_contents(public_path('favicon.ico'));
+        $this->assertGreaterThan(6, strlen($icon));
+        $this->assertSame("\x00\x00\x01\x00", substr($icon, 0, 4));
+    }
+
     public function test_national_night_out_page_and_lowercase_alias(): void
     {
         $this->get('/NNO2026')
