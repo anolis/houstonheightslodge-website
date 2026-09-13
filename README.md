@@ -110,87 +110,108 @@ Run the Laravel test suite:
 php artisan test
 ```
 
-## Shipping a change to production
+## Docker checks and deployments
 
-Deploys are **automated** via GitHub Actions (`.github/workflows/ci.yml` and
-`deploy.yml`). You never SSH in to deploy.
+The website no longer needs the `portal-staging` VirtualBox VM. Docker runs a
+fresh Apache/PHP staging site for every check, with disposable SQLite data and
+local mail logging. Production remains the existing Laravel/Apache installation
+at `/var/www/website` on `lodge`.
 
-1. **Branch, change, and open a PR:**
-   ```bash
-   git checkout -b my-change
-   # ...edit, commit...
-   git push -u origin my-change
-   gh pr create            # or open the PR on GitHub
-   ```
-2. **CI runs on the PR** — PHPUnit (PHP 8.3/8.4), Pint code style, and a
-   front-end build. Keep it green; run the same checks locally first:
-   ```bash
-   vendor/bin/pint --test     # style (run `vendor/bin/pint` to auto-fix)
-   php artisan test
-   ```
-3. **Merge to `main`.** That triggers the **Deploy** workflow on the self-hosted
-   runner:
-   - CI runs again as a gate, then
-   - CI publishes the tested Vite bundle; **staging** installs it and runs HTTP
-     smoke checks, then — only if that passes —
-   - **production** (`/var/www/website` on `lodge`, reached over Tailscale) is
-     updated at the exact `main` SHA: Composer installs the locked PHP dependencies,
-     the same tested frontend bundle is installed, migrations run, and post-deploy
-     HTTP smoke checks must pass.
-
-Watch a deploy with `gh run watch` or in the repo's **Actions** tab.
-
-### Where the CI/CD runner runs
-
-The `ci` jobs run on GitHub-hosted `ubuntu-latest`. The `deploy-staging` and
-`deploy-prod` jobs run on a **self-hosted runner** (`runs-on: [self-hosted,
-staging]`):
-
-- The runner for this repo is **`vbox-website`**; a sibling runner
-  **`vbox-portal`** serves the admin-portal repo. Both run inside a **single
-  VirtualBox VM** — `portal-staging` (guest hostname `vbox`) — on the **`bb`**
-  desktop (Pop!_OS). This VM was migrated off the old laptop in July 2026.
-- That same VM hosts the **staging** environment (Apache/PHP at
-  `/var/www/website`); the runner's work dir is `~/runner-website`.
-- Networking: the VM is NAT'd with port-forwards on `bb`'s loopback — SSH
-  `8022→22`, HTTP `8080→80`, HTTPS `8443→443`. Reach it with `ssh
-  portal-staging` (routes through `bb` via `ProxyJump` from elsewhere; direct on
-  `bb`). The staging site on `bb` is `http://127.0.0.1:8080`.
-- `deploy-prod` runs from that runner and SSHes to production (`lodge`) over
-  **Tailscale**.
-
-**If a deploy is stuck or fails before CI even reaches staging:**
-
-1. Is the VM up? On `bb`: `VBoxManage list runningvms` (start it with
-   `VBoxManage startvm portal-staging --type headless`).
-2. Is the runner online? In the VM:
-   `systemctl status 'actions.runner.*website*'` — or GitHub → repo **Settings →
-   Actions → Runners**.
-3. The staging **build** step (`npm run build`) fetches web fonts over the
-   network at build time; a network blip there can fail the deploy. (The failed
-   deploys in July 2026 were transient font-fetch timeouts on the old laptop's
-   network and no longer recur on `bb`.)
-
-### Manual deploy (fallback)
-
-Only if Actions is unavailable — by hand on `lodge`:
+On Linux, macOS, or Windows with WSL2, install Docker (Engine or Desktop), Git,
+and Bash. Clone this repository, then run:
 
 ```bash
-cd /var/www/website
-git pull origin main
-composer install --no-dev --optimize-autoloader
-npm ci && npm run build
-php artisan migrate --force
-php artisan config:clear && php artisan route:clear && php artisan view:clear
+tools/deploy.sh --check
 ```
 
-Writable runtime paths must be writable by both the SSH user and the web server group:
+This builds PHP/Composer and Node dependencies in Docker, runs PHPUnit and Pint,
+builds the frontend, starts Apache, and smoke-checks the public pages. Temporary
+containers and tagged images are removed afterward; Docker build cache remains
+for subsequent runs. No host PHP, Composer, or Node installation is required.
+
+### Deploy from a laptop or another computer
+
+Connect that computer to the lodge's Tailscale network and have an authorized
+production SSH private key available locally. Start from a clean checkout of the
+latest `origin/main`:
 
 ```bash
-sudo chown -R admin:www-data storage bootstrap/cache
-find storage bootstrap/cache -type d -exec chmod 2775 {} +
-find storage bootstrap/cache -type f -exec chmod 0664 {} +
+git fetch origin main
+git switch --detach origin/main
+tools/deploy.sh --production --identity ~/.ssh/houstonheightslodge225.pem
 ```
+
+The default target is `admin@100.97.10.38`, the production server's Tailscale
+address. Override with `--host HOST --user USER` or `PROD_HOST` / `PROD_USER`.
+The private key is copied only into the temporary deployment client, never into
+an image or the repository. The production SSH host key is pinned in
+`docker/deploy/known_hosts`; a server-key change requires deliberate verification
+and updating that file.
+
+The command repeats the Docker checks before deploying. It ships the exact
+frontend bundle that the temporary staging site served. Production takes an
+exclusive file lock, rejects a dirty checkout or a commit that is no longer the
+latest `origin/main`, then installs dependencies, assets, and migrations and
+refreshes caches. It brings the application out of maintenance mode on failure,
+but does not automatically roll back code or database migrations. The command
+returns failure if deployment or the final HTTPS smoke checks fail.
+
+`--check` is the default and never contacts production. `--artifact DIR` uses an
+existing Vite bundle (with `manifest.json`) instead of rebuilding it; GitHub
+Actions uses this to deploy its tested frontend artifact.
+
+### Automatic deployments on bb
+
+`bb` is the machine named `CrystalineShadow`. The repository-scoped GitHub
+Actions runner `bb-website-docker` runs in a Docker container with
+`--restart unless-stopped` and the `website-docker` label. Docker must start at
+boot and bb must be awake and online for automatic deployments. Runner state
+and automatic runner updates persist in the `bb-website-docker-state` volume.
+
+The runner uses the host Docker socket and is reserved for trusted `main`
+deployments. Pull-request tests run on GitHub-hosted machines, including the
+Docker staging checks. Do not assign untrusted PR jobs to this runner.
+
+To install the runner on a Linux host with Docker and an authenticated GitHub
+CLI account that can administer this repository:
+
+```bash
+tools/install-runner.sh                  # default name: bb-website-docker
+# A different permanent runner needs a unique name:
+# tools/install-runner.sh laptop-website-docker
+```
+
+A laptop does **not** need to register a runner to use `tools/deploy.sh` manually.
+The installer verifies GitHub's published runner archive digest, registers it,
+and starts the container. Re-running it preserves existing registration and
+leaves an existing container running.
+
+```bash
+docker logs --tail 50 bb-website-docker
+docker inspect --format '{{.HostConfig.RestartPolicy.Name}}' bb-website-docker
+gh api repos/anolis/houstonheightslodge-website/actions/runners
+```
+
+Merge a PR into `main` to deploy automatically. The Deploy workflow runs CI on
+GitHub, then invokes the same portable command on the Docker runner with the
+existing `PROD_SSH_KEY`, `PROD_HOST`, and `PROD_USER` repository secrets. It can
+also be started with **Run workflow** on `main`. A server-side lock serializes
+manual deployments against automatic ones.
+
+The old `vbox-website` runner is no longer selected by these workflows. The
+shared VM also serves the portal repository; retiring the website runner does
+not migrate or shut down the portal's services.
+
+### Development checks for deployment tooling
+
+```bash
+shellcheck tools/*.sh docker/deploy/*.sh docker/runner/entrypoint.sh docker/staging-entrypoint.sh
+python3 tools/test-deploy.py
+tools/deploy.sh --check
+```
+
+The deployment safety tests simulate dirty and outdated production checkouts,
+a dependency-install failure, and concurrent deploys without touching production.
 
 ## Git Ignore Policy
 

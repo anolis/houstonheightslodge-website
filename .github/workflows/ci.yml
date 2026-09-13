@@ -79,3 +79,21 @@ jobs:
           path: public/build
           if-no-files-found: error
           retention-days: 7
+
+  docker-staging:
+    name: Docker staging smoke checks
+    needs: frontend
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: website-build-${{ github.sha }}
+          path: ${{ runner.temp }}/website-build
+      - name: Test the Apache/PHP container with the tested frontend bundle
+        run: tools/deploy.sh --check --artifact "$RUNNER_TEMP/website-build"
+      - name: Verify deployment safety gates
+        run: |
+          shellcheck tools/*.sh docker/deploy/*.sh docker/runner/entrypoint.sh docker/staging-entrypoint.sh
+          python3 tools/test-deploy.py
