@@ -13,10 +13,9 @@
     <meta property="fb:app_id" content="965766727408385">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="apple-touch-icon" sizes="16x16" href="{{ asset("res/img/favicon/favicon-16x16.png") }}">
-    <link rel="apple-touch-icon" sizes="32x32" href="{{ asset("res/img/favicon/favicon-32x32.png") }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset("res/img/favicon/favicon-16x16.png") }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset("res/img/favicon/favicon-32x32.png") }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset("res/img/favicon/apple-touch-icon.png") }}">
-    <link rel="manifest" href="{{ asset("res/img/favicon/manifest.json") }}">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
