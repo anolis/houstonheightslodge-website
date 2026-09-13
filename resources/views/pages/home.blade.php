@@ -61,6 +61,11 @@
     </div>
 </section>
 
+<aside class="nno-home-notice" aria-label="Upcoming National Night Out">
+    <p><strong>Also coming up: National Night Out</strong><br>Tuesday, October 6 · 5:30–8:00 PM · Free, family-friendly neighborhood fun.</p>
+    <a href="{{ url('/NNO2026') }}">Event details &rarr;</a>
+</aside>
+
    <!-- Chili Cookoff Stuff -->
    <!-- <div class="row justify-content-center">
         <div class="col-12 col-md-12 col-lg-8 col-12 col col-sm-12 text-center" style="border-radius: 5px;">

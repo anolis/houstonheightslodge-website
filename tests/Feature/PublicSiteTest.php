@@ -20,6 +20,24 @@ class PublicSiteTest extends TestCase
         $this->get('/definitely-not-a-lodge-page')->assertNotFound();
     }
 
+    public function test_national_night_out_page_and_lowercase_alias(): void
+    {
+        $this->get('/NNO2026')
+            ->assertOk()
+            ->assertSee('National Night Out 2026')
+            ->assertSee('Tuesday, October 6, 2026')
+            ->assertSee('5:30 PM &ndash; 8:00 PM', false)
+            ->assertSee('115 E. 14th Street')
+            ->assertSee('Enjoy free ice cream and win a door prize!')
+            ->assertSee('res/img/nno-2026.png', false)
+            ->assertSee('res/img/nno-logo-2026.jpg', false)
+            ->assertSee('<meta property="og:image" content="http://localhost/res/img/nno-2026.png">', false);
+
+        $this->get('/nno2026')->assertStatus(301)->assertRedirect('/NNO2026');
+        $this->get('/')->assertSee('href="http://localhost/NNO2026"', false)
+            ->assertSee('Sausage Fest 2026');
+    }
+
     public function test_homepage_features_sausage_fest_2026(): void
     {
         $this->get('/')
