@@ -3,7 +3,7 @@ set -euo pipefail
 deploy_sha=$1
 release_tmp=$2
 [[ "$deploy_sha" =~ ^[0-9a-f]{40}$ ]] || exit 2
-[[ "$release_tmp" =~ ^/tmp/lodge-deploy\.[a-zA-Z0-9]+$ ]] || exit 2
+[[ "$release_tmp" =~ ^/tmp/lodge-deploy\.[a-zA-Z0-9_]+$ ]] || exit 2
 cd "${DEPLOY_ROOT:-/var/www/website}"
 # Serializes deployments from GitHub Actions and every developer laptop.
 lock_file=$(git rev-parse --git-path lodge-deploy.lock)
