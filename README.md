@@ -252,6 +252,12 @@ A successful empty feed removes events that Facebook has deleted or cancelled.
 The public JSON feed contains only normalized event data and a refresh timestamp;
 no access tokens or app secrets are exposed.
 
+Event pictures are downloaded during sync into `storage/app/private/facebook-images`
+and served through content-addressed `/events/images/` URLs. This avoids depending
+on Facebook CDN access in visitors’ browsers. Downloads accept only validated
+JPEG/PNG/WebP files from Facebook CDN hosts, limit size, and do not forward the
+Page token. A failed download retains the last cached picture.
+
 ## Git Ignore Policy
 
 Do not commit:

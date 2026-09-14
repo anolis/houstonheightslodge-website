@@ -22,6 +22,7 @@ class FacebookEventsTest extends TestCase
             'facebook.graph_version' => 'v24.0',
             'facebook.calendar_enabled' => true,
             'facebook.snapshot_path' => $this->snapshotPath,
+            'facebook.images_path' => $this->snapshotPath.'-images',
         ]);
         Http::preventStrayRequests();
     }
@@ -29,6 +30,7 @@ class FacebookEventsTest extends TestCase
     protected function tearDown(): void
     {
         File::delete($this->snapshotPath);
+        File::deleteDirectory($this->snapshotPath.'-images');
         parent::tearDown();
     }
 
@@ -95,6 +97,38 @@ class FacebookEventsTest extends TestCase
         app(FacebookEvents::class)->sync();
         $this->get('/events/feed')->assertJsonPath('events.0.start', '2026-10-07T00:30:00+00:00')
             ->assertJsonPath('events.1.start', '2026-11-04T01:30:00+00:00');
+    }
+
+    public function test_cover_is_cached_locally_and_retained_when_the_cdn_fails(): void
+    {
+        $image = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aG1sAAAAASUVORK5CYII=');
+        Http::fake([
+            'graph.facebook.com/*' => Http::response(['data' => [$this->event(['cover' => ['source' => 'https://scontent.xx.fbcdn.net/event.jpg']])]]),
+            'scontent.xx.fbcdn.net/*' => Http::sequence()->push($image, 200, ['Content-Type' => 'image/png'])->push('', 403),
+        ]);
+        $service = app(FacebookEvents::class);
+        $url = $service->sync()['events'][0]['extendedProps']['cover'];
+        $this->assertSame('/events/images/'.hash('sha256', $image).'.png', $url);
+        $this->get($url)->assertOk()->assertHeader('Content-Type', 'image/png');
+        $this->assertSame($image, File::get(config('facebook.images_path').'/'.basename($url)));
+        $this->assertSame($url, $service->sync()['events'][0]['extendedProps']['cover']);
+        Http::assertSent(fn ($request) => str_contains($request->url(), 'fbcdn.net') && ! $request->hasHeader('Authorization'));
+    }
+
+    public function test_cover_does_not_fetch_untrusted_hosts_or_publish_non_images(): void
+    {
+        Http::fake([
+            'graph.facebook.com/*' => Http::response(['data' => [
+                $this->event(['cover' => ['source' => 'https://127.0.0.1/private']]),
+                $this->event(['id' => '101', 'cover' => ['source' => 'https://scontent.xx.fbcdn.net/not-image']]),
+            ]]),
+            'scontent.xx.fbcdn.net/*' => Http::response('<html>not an image</html>'),
+        ]);
+        $events = app(FacebookEvents::class)->sync()['events'];
+        $this->assertNull($events[0]['extendedProps']['cover']);
+        $this->assertNull($events[1]['extendedProps']['cover']);
+        Http::assertSentCount(2);
+        $this->get('/events/images/'.str_repeat('a', 64).'.png')->assertNotFound();
     }
 
     public function test_native_calendar_replaces_iframe_without_exposing_credentials(): void

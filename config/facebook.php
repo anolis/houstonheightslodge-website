@@ -6,5 +6,6 @@ return [
     'page_access_token' => env('FACEBOOK_PAGE_ACCESS_TOKEN'),
     'graph_version' => env('FACEBOOK_GRAPH_VERSION', 'v24.0'),
     'calendar_enabled' => (bool) env('FACEBOOK_CALENDAR_ENABLED', false),
+    'images_path' => storage_path('app/private/facebook-images'),
     'snapshot_path' => storage_path('app/private/facebook-events.json'),
 ];

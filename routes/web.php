@@ -86,6 +86,14 @@ Route::get('/', fn () => $renderPage('home'));
 Route::get('/home', fn () => $renderPage('home'));
 Route::get('/nno2026', fn () => redirect('/NNO2026', 301));
 
+Route::get('/events/images/{filename}', function (string $filename) {
+    abort_unless(config('facebook.calendar_enabled'), 404);
+    $path = config('facebook.images_path').'/'.$filename;
+    abort_unless(is_file($path), 404);
+
+    return response()->file($path, ['Cache-Control' => 'public, max-age=31536000, immutable']);
+})->where('filename', '[a-f0-9]{64}\\.(jpg|png|webp)');
+
 Route::get('/events/feed', function (FacebookEvents $events) {
     abort_unless(config('facebook.calendar_enabled'), 404);
     $snapshot = $events->snapshot();
