@@ -1,29 +1,17 @@
-.lodge-calendar {
-    --fc-border-color: #50516d;
-    --fc-page-bg-color: #222233;
-    --fc-neutral-bg-color: #303047;
-    --fc-neutral-text-color: #eee;
-    --fc-today-bg-color: #343853;
-    --fc-list-event-hover-bg-color: #373953;
-    --fc-button-bg-color: #343954;
-    --fc-button-border-color: #626783;
-    --fc-button-hover-bg-color: #454e76;
-    --fc-button-active-bg-color: #4c587e;
-    --fc-event-bg-color: #adcaff;
-    --fc-event-border-color: #adcaff;
-    --fc-event-text-color: #121b32;
-    color: #eee;
-    padding: 1.25rem 0;
-}
+.lodge-calendar { color: #eee; padding: 1.25rem 0; }
 .lodge-calendar__heading { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: baseline; }
 .lodge-calendar a { color: #adcaff; }
-.lodge-calendar .fc-col-header-cell-cushion,
-.lodge-calendar .fc-daygrid-day-number,
-.lodge-calendar .fc-list-day a { color: #eee; text-decoration: none; }
+[data-lodge-calendar] { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.25rem; }
 .lodge-calendar [data-calendar-status] { color: #bec0d5; font-size: .9rem; }
-.lodge-calendar .fc-toolbar-title { font-size: 1.5rem; }
-.lodge-calendar .fc-daygrid-event { white-space: normal; }
-.lodge-calendar .fc-event { cursor: pointer; }
+.lodge-calendar [data-calendar-status]:empty { display: none; }
+.lodge-event-card { max-width: 480px; border: 1px solid #50516d; border-radius: 12px; overflow: hidden; background: #292a3e; }
+.lodge-event-card > img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.lodge-event-card__body { padding: 1.25rem; }
+.lodge-event-card h3 { margin: 0 0 .75rem; font-size: 1.4rem; }
+.lodge-event-card time { color: #d1ddf4; }
+.lodge-event-card p { margin: .75rem 0 1rem; }
+.lodge-event-card button { padding: .65rem 1rem; border: 1px solid #7d91b7; border-radius: 6px; background: #343954; color: #fff; cursor: pointer; }
+.lodge-event-card button:hover { background: #454e76; }
 .lodge-calendar a:focus-visible,
 .lodge-calendar button:focus-visible { outline: 3px solid #f2bd55; outline-offset: 3px; }
 .lodge-calendar__dialog { width: min(620px, calc(100% - 2rem)); max-height: 85vh; padding: 1.5rem; border: 1px solid #6a7394; border-radius: 12px; background: #222233; color: #eee; }
@@ -31,7 +19,3 @@
 .lodge-calendar__dialog button { display: block; margin: 0 0 1rem auto; padding: .4rem .8rem; background: #343954; color: #fff; border: 1px solid #626783; border-radius: 4px; }
 .lodge-calendar__dialog img { width: 100%; max-height: 300px; object-fit: contain; margin-bottom: 1rem; }
 .lodge-calendar__dialog [data-event-description] { white-space: pre-wrap; overflow-wrap: anywhere; }
-@media (max-width: 640px) {
-    .lodge-calendar .fc-toolbar { flex-wrap: wrap; gap: .8rem; }
-    .lodge-calendar .fc-toolbar-title { font-size: 1.25rem; }
-}

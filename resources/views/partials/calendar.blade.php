@@ -2,7 +2,7 @@
     <div class="lodge-calendar__heading">
         <div>
             <h2 id="calendar-title">What’s happening at the lodge</h2>
-            <p>Upcoming events from our Facebook page. All times are Houston time.</p>
+            <p>Join us at an upcoming event. All times are Houston time.</p>
         </div>
         <a href="https://www.facebook.com/OddFellowsLodge225/events/" target="_blank" rel="noopener noreferrer">Follow on Facebook</a>
     </div>

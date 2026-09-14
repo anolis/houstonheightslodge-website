@@ -215,10 +215,12 @@ a dependency-install failure, and concurrent deploys without touching production
 
 ## Facebook event calendar
 
-The native calendar uses FullCalendar (month/list views) with a server-side feed
+Upcoming event cards use a server-side feed
 from the lodge's Facebook Page. Event titles, dates, descriptions, locations,
 images, and Facebook RSVP links come from Facebook. Editing events stays on
-Facebook; there is no second calendar to maintain.
+Facebook; there is no second calendar to maintain. Past events are hidden;
+ongoing events remain visible until their end time. Cards open the full event
+details and a Facebook RSVP link.
 
 Configure these in the production `.env`, never in Git:
 
