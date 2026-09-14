@@ -21,13 +21,18 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
+        $frameSources = "frame-src 'self' https://www.google.com https://maps.google.com https://docs.google.com";
+        if (! config('facebook.calendar_enabled')) {
+            $frameSources .= ' https://widgets.sociablekit.com';
+        }
+
         $response->headers->set('Content-Security-Policy', implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net https://www.googletagmanager.com",
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
             "img-src 'self' data: https:",
             "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
-            "frame-src 'self' https://www.google.com https://maps.google.com https://docs.google.com https://widgets.sociablekit.com",
+            $frameSources,
             "form-action 'self' https://www.paypal.com https://paypal.me",
             "frame-ancestors 'self'",
             "base-uri 'self'",

@@ -1,0 +1,37 @@
+.lodge-calendar {
+    --fc-border-color: #50516d;
+    --fc-page-bg-color: #222233;
+    --fc-neutral-bg-color: #303047;
+    --fc-neutral-text-color: #eee;
+    --fc-today-bg-color: #343853;
+    --fc-list-event-hover-bg-color: #373953;
+    --fc-button-bg-color: #343954;
+    --fc-button-border-color: #626783;
+    --fc-button-hover-bg-color: #454e76;
+    --fc-button-active-bg-color: #4c587e;
+    --fc-event-bg-color: #adcaff;
+    --fc-event-border-color: #adcaff;
+    --fc-event-text-color: #121b32;
+    color: #eee;
+    padding: 1.25rem 0;
+}
+.lodge-calendar__heading { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; align-items: baseline; }
+.lodge-calendar a { color: #adcaff; }
+.lodge-calendar .fc-col-header-cell-cushion,
+.lodge-calendar .fc-daygrid-day-number,
+.lodge-calendar .fc-list-day a { color: #eee; text-decoration: none; }
+.lodge-calendar [data-calendar-status] { color: #bec0d5; font-size: .9rem; }
+.lodge-calendar .fc-toolbar-title { font-size: 1.5rem; }
+.lodge-calendar .fc-daygrid-event { white-space: normal; }
+.lodge-calendar .fc-event { cursor: pointer; }
+.lodge-calendar a:focus-visible,
+.lodge-calendar button:focus-visible { outline: 3px solid #f2bd55; outline-offset: 3px; }
+.lodge-calendar__dialog { width: min(620px, calc(100% - 2rem)); max-height: 85vh; padding: 1.5rem; border: 1px solid #6a7394; border-radius: 12px; background: #222233; color: #eee; }
+.lodge-calendar__dialog::backdrop { background: rgb(0 0 0 / 75%); }
+.lodge-calendar__dialog button { display: block; margin: 0 0 1rem auto; padding: .4rem .8rem; background: #343954; color: #fff; border: 1px solid #626783; border-radius: 4px; }
+.lodge-calendar__dialog img { width: 100%; max-height: 300px; object-fit: contain; margin-bottom: 1rem; }
+.lodge-calendar__dialog [data-event-description] { white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+    .lodge-calendar .fc-toolbar { flex-wrap: wrap; gap: .8rem; }
+    .lodge-calendar .fc-toolbar-title { font-size: 1.25rem; }
+}
