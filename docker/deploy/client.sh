@@ -10,7 +10,7 @@ ssh_options=(-i /run/deploy/key -o BatchMode=yes -o IdentitiesOnly=yes
     -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=4)
 target="$PROD_USER@$PROD_HOST"
 release_tmp=$(ssh "${ssh_options[@]}" "$target" 'mktemp -d /tmp/lodge-deploy.XXXXXXXX')
-[[ "$release_tmp" =~ ^/tmp/lodge-deploy\.[a-zA-Z0-9]+$ ]] || exit 2
+[[ "$release_tmp" =~ ^/tmp/lodge-deploy\.[a-zA-Z0-9_]+$ ]] || exit 2
 cleanup() {
     # Validated above; these arguments intentionally expand on the client.
     # shellcheck disable=SC2029
