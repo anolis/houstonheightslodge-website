@@ -1,7 +1,43 @@
 html,body{
-    background:#000;
+    background:#080a12;
     color: #ccc;
     scroll-padding-top: 76px;
+}
+
+/* Decorative light stays behind content and never intercepts interaction. */
+body {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+}
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: -1;
+}
+body::before {
+    inset: -8%;
+    background:
+        radial-gradient(ellipse at 12% 25%, rgb(68 105 175 / 23%), transparent 48%),
+        radial-gradient(ellipse at 90% 75%, rgb(177 125 52 / 15%), transparent 45%),
+        radial-gradient(ellipse at 76% 8%, rgb(65 91 153 / 12%), transparent 40%);
+    animation: lodge-light-drift 38s ease-in-out infinite alternate;
+}
+body::after {
+    inset: 0;
+    background: url('../img/background-grain.svg') repeat;
+}
+@keyframes lodge-light-drift {
+    from { transform: translate3d(-1%, -1%, 0) scale(1); }
+    to { transform: translate3d(2%, 2%, 0) scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; transform: none; }
+}
+@media print {
+    body::before, body::after { display: none; }
 }
 
 .row{
@@ -63,7 +99,7 @@ html,body{
 
 #contentContainer{
     margin-top:50px;
-    background: #223;
+    background: rgb(34 34 51 / 96%) url('../img/background-grain.svg') repeat;
     padding:20px;
     border-radius: 5px;
 }
