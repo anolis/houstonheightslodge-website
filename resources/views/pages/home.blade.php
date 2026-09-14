@@ -429,29 +429,43 @@
         </div>
     </div>
 </div>
-<div style="display:flex; align-items:center; gap:8px; margin-bottom:1rem;">
+<div class="lodge-payments">
     <span>Members can pay dues here:</span>
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" style="margin:0;">
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
         <input type="hidden" name="cmd" value="_s-xclick">
 
         <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
 ">
 <!-- <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit"
 alt="PayPal - The safer, easier way to pay online!"> -->
-        <button name="submit" class="btn btn-dues" alt="PayPal - The safer, easier way to pay online!">Pay Dues</button>
+        <button type="submit" name="submit" class="btn btn-dues">Pay Dues</button>
         <img loading="lazy" alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1"
              height="1">
     </form>
-</div>
-
-<div class="row col-12">
-    <div><span>AdHoc Donations and Payments Here: <a href="https://www.paypal.com/donate/?hosted_button_id=EGLENU47SQTN8" target="_blank">
-        <button class="btn btn-dues">Donate</button></a></span>
-    </div>
+    <span>AdHoc Donations and Payments Here:</span>
+    <a class="btn btn-dues" href="https://www.paypal.com/donate/?hosted_button_id=EGLENU47SQTN8" target="_blank" rel="noopener noreferrer">Donate</a>
 </div>
 </div>
 
 <style>
+    .lodge-payments {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 1rem 1.5rem;
+        width: fit-content;
+        max-width: 100%;
+        margin: 1.5rem 0;
+    }
+    .lodge-payments form { margin: 0; display: flex; }
+    .lodge-payments form img { position: absolute; }
+    .lodge-payments .btn-dues { min-width: 8rem; text-align: center; }
+    @media (max-width: 480px) {
+        .lodge-payments { grid-template-columns: 1fr; width: 100%; gap: .5rem; }
+        .lodge-payments .btn-dues { width: 100%; }
+        .lodge-payments form { margin-bottom: .75rem; }
+    }
+
     #eventTable {
         table-layout: fixed;
 
