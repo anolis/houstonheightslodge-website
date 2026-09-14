@@ -77,6 +77,12 @@ class FacebookEvents
         if ($after !== null) {
             throw new RuntimeException('Facebook event pagination exceeded the sync limit; the previous snapshot was retained.');
         }
+        $previous = collect($this->snapshot()['events'] ?? [])->keyBy('id');
+        foreach ($events as &$event) {
+            $oldCover = $previous->get($event['id'])['extendedProps']['cover'] ?? null;
+            $event['extendedProps']['cover'] = $this->cacheCover($event['extendedProps']['cover'], $oldCover);
+        }
+        unset($event);
         $events = array_values($events);
         usort($events, fn (array $a, array $b) => strcmp($a['start'], $b['start']));
         $snapshot = ['events' => $events, 'updatedAt' => CarbonImmutable::now()->toIso8601String()];
@@ -86,6 +92,50 @@ class FacebookEvents
         File::replace($path, json_encode($snapshot, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
 
         return $snapshot;
+    }
+
+    private function cacheCover(?string $url, ?string $previous): ?string
+    {
+        if (! $url) {
+            return null;
+        }
+        $fallback = is_string($previous) && preg_match('~^/events/images/[a-f0-9]{64}\.(jpg|png|webp)$~', $previous)
+            && File::exists(config('facebook.images_path').'/'.basename($previous)) ? $previous : null;
+        $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
+        if (parse_url($url, PHP_URL_SCHEME) !== 'https' || ! str_ends_with($host, '.fbcdn.net')
+            || parse_url($url, PHP_URL_USER) !== null || parse_url($url, PHP_URL_PORT) !== null) {
+            return $fallback;
+        }
+        try {
+            // Download only Facebook CDN images, without forwarding the Page token or following redirects.
+            $response = Http::connectTimeout(5)->timeout(20)->withOptions([
+                'allow_redirects' => false,
+                'progress' => function ($total, $downloaded) {
+                    if ($total > 5 * 1024 * 1024 || $downloaded > 5 * 1024 * 1024) {
+                        throw new RuntimeException('Event image exceeds the size limit.');
+                    }
+                },
+            ])->get($url);
+            $bytes = $response->body();
+            if (! $response->successful() || strlen($bytes) > 5 * 1024 * 1024) {
+                return $fallback;
+            }
+            $info = @getimagesizefromstring($bytes);
+            $extension = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'][$info['mime'] ?? ''] ?? null;
+            if (! $extension) {
+                return $fallback;
+            }
+            $filename = hash('sha256', $bytes).'.'.$extension;
+            $directory = config('facebook.images_path');
+            File::ensureDirectoryExists($directory);
+            if (! File::exists($directory.'/'.$filename)) {
+                File::replace($directory.'/'.$filename, $bytes);
+            }
+
+            return '/events/images/'.$filename;
+        } catch (\Throwable) {
+            return $fallback;
+        }
     }
 
     private function normalize(array $event): array
