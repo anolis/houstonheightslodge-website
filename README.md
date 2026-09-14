@@ -223,11 +223,12 @@ Facebook; there is no second calendar to maintain.
 Configure these in the production `.env`, never in Git:
 
 - `FACEBOOK_APP_ID=965766727408385`
-- `FACEBOOK_PAGE_ID`: the numeric ID of the lodge Page (not the app ID).
+- `FACEBOOK_PAGE_ID=160769860639621`: Odd Fellows Lodge #225.
 - `FACEBOOK_PAGE_ACCESS_TOKEN`: a Page token issued through the lodge's Meta app,
   with access to read that Page's events. The app currently has standard access
-  to `pages_read_engagement` and `pages_show_list`; live API verification is still
-  required before enabling this calendar.
+  to `pages_read_engagement` and `pages_show_list`. Both scopes and the v24.0
+  event fields were verified against the lodge Page. Use a long-lived Page token;
+  check its expiry in Meta’s Access Token Debugger before activation.
 - `FACEBOOK_GRAPH_VERSION=v24.0`
 
 Run `php artisan facebook:sync-events` and verify `/events/feed` after enabling
