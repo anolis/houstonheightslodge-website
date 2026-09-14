@@ -21,6 +21,7 @@ class DeploySafetyTest(unittest.TestCase):
         self.addCleanup(self.release.cleanup)
         root = Path(self.work.name)
         (root / "storage").mkdir()
+        (root / ".git").mkdir()
         (root / "bin").mkdir()
         self.log = root / "commands.jsonl"
         fake = root / "bin/fake"
@@ -35,6 +36,7 @@ if name == "git":
     if args == ["branch", "--show-current"]: print("main")
     if args == ["status", "--porcelain"]: print(os.environ.get("TEST_DIRTY", ""), end="")
     if args == ["rev-parse", "origin/main"]: print(os.environ["TEST_REMOTE_SHA"])
+    if args == ["rev-parse", "--git-path", "lodge-deploy.lock"]: print(".git/lodge-deploy.lock")
 if name == "composer" and os.environ.get("TEST_FAIL_COMPOSER"): sys.exit(1)
 ''')
         fake.chmod(0o755)
@@ -78,10 +80,10 @@ if name == "composer" and os.environ.get("TEST_FAIL_COMPOSER"): sys.exit(1)
         self.assertFalse(any(cmd[0] == "rsync" for cmd in self.commands()))
 
     def test_concurrent_deploy_cannot_modify_production(self):
-        with open(Path(self.work.name) / "storage/deploy.lock", "w") as lock:
+        with open(Path(self.work.name) / ".git/lodge-deploy.lock", "w") as lock:
             fcntl.flock(lock, fcntl.LOCK_EX)
             self.assertNotEqual(self.run_deploy().returncode, 0)
-        self.assertEqual(self.commands(), [])
+        self.assertEqual(self.commands(), [["git", "rev-parse", "--git-path", "lodge-deploy.lock"]])
 
 
 if __name__ == "__main__":
