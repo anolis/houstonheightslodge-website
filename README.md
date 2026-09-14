@@ -213,6 +213,42 @@ tools/deploy.sh --check
 The deployment safety tests simulate dirty and outdated production checkouts,
 a dependency-install failure, and concurrent deploys without touching production.
 
+## Facebook event calendar
+
+The native calendar uses FullCalendar (month/list views) with a server-side feed
+from the lodge's Facebook Page. Event titles, dates, descriptions, locations,
+images, and Facebook RSVP links come from Facebook. Editing events stays on
+Facebook; there is no second calendar to maintain.
+
+Configure these in the production `.env`, never in Git:
+
+- `FACEBOOK_APP_ID=965766727408385`
+- `FACEBOOK_PAGE_ID`: the numeric ID of the lodge Page (not the app ID).
+- `FACEBOOK_PAGE_ACCESS_TOKEN`: a Page token issued through the lodge's Meta app,
+  with access to read that Page's events. The app currently has standard access
+  to `pages_read_engagement` and `pages_show_list`; live API verification is still
+  required before enabling this calendar.
+- `FACEBOOK_GRAPH_VERSION=v24.0`
+
+Run `php artisan facebook:sync-events` and verify `/events/feed` after enabling
+`FACEBOOK_CALENDAR_ENABLED=true`. Run `php artisan config:clear` after editing
+configuration. The existing widget remains selected while the flag is false,
+so deployment alone cannot replace working events with an unconfigured feed.
+
+Laravel schedules a refresh every 15 minutes. Production must run its scheduler:
+
+```cron
+* * * * * cd /var/www/website && php artisan schedule:run >> /var/www/website/storage/logs/scheduler.log 2>&1
+```
+
+A complete successful sync atomically replaces
+`storage/app/private/facebook-events.json`. This file survives deployments and
+is not publicly downloadable. Failed or partial syncs retain the last complete
+snapshot, and the calendar marks data older than a day as potentially outdated.
+A successful empty feed removes events that Facebook has deleted or cancelled.
+The public JSON feed contains only normalized event data and a refresh timestamp;
+no access tokens or app secrets are exposed.
+
 ## Git Ignore Policy
 
 Do not commit:

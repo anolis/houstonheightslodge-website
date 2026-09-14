@@ -324,7 +324,11 @@
 
     <div class="col-12">
 
-        <iframe src="https://widgets.sociablekit.com/facebook-page-events/iframe/25673323" frameborder="0" width="100%" height="500px"></iframe>
+        @if (config('facebook.calendar_enabled'))
+            @include('partials.calendar')
+        @else
+            <iframe src="https://widgets.sociablekit.com/facebook-page-events/iframe/25673323" title="Lodge Facebook events" frameborder="0" width="100%" height="500px"></iframe>
+        @endif
         <!-- <div class='row' id="headerImages"> -->
     <!-- <div class="col-12 col-md-4 col-lg-4"><a data-lightbox='chiliSet' data-title='Chili Cookoff 1'
                                              href="res/img/chili_team2_2018.jpg">

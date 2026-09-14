@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\FacebookEvents;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -84,6 +85,15 @@ Route::get('/members', fn () => redirect('https://secret.houstonheightslodge225.
 Route::get('/', fn () => $renderPage('home'));
 Route::get('/home', fn () => $renderPage('home'));
 Route::get('/nno2026', fn () => redirect('/NNO2026', 301));
+
+Route::get('/events/feed', function (FacebookEvents $events) {
+    abort_unless(config('facebook.calendar_enabled'), 404);
+    $snapshot = $events->snapshot();
+
+    return $snapshot
+        ? response()->json($snapshot)->header('Cache-Control', 'public, max-age=300')
+        : response()->json(['message' => 'The event calendar is temporarily unavailable.'], 503);
+});
 
 Route::get('/downloads', function () use ($navPages, $downloadsPath) {
     $apks = collect(glob($downloadsPath('*.apk')) ?: [])
